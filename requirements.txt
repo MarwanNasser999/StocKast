@@ -1,0 +1,6 @@
+pandas
+numpy
+pydantic>=2
+pytest
+charset-normalizer
+openpyxl

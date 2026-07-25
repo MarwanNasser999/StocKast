@@ -1,0 +1,5 @@
+[
+  {"product_id": "SKU-001", "quantity": 10, "date": "2024-01-01"},
+  {"product_id": "SKU-002", "quantity": 5, "date": "2024-01-02"},
+  {"product_id": "SKU-003", "quantity": 7, "date": "2024-01-03"}
+]
