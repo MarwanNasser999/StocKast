@@ -51,6 +51,13 @@ CANONICAL_FIELDS: list[CanonicalField] = [
                    description="Warehouse / location identifier.", default_if_missing="main"),
     CanonicalField(name="current_stock", dtype="float", requirement=FieldRequirement.OPTIONAL,
                    description="On-hand inventory level."),
+    CanonicalField(
+    name="lead_time_days", dtype="float", requirement=FieldRequirement.OPTIONAL,
+    description="Days between placing a reorder and receiving stock. "
+                "Used for safety stock and reorder point calculations. "
+                "If absent, the user must supply an assumed lead time "
+                "at calculation time -- never fabricated or defaulted.",
+),
 ]
 
 REQUIRED_FIELDS: list[str] = [f.name for f in CANONICAL_FIELDS if f.requirement == FieldRequirement.REQUIRED]

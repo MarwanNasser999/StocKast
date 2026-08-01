@@ -56,6 +56,10 @@ FIELD_ALIASES: dict[str, list[str]] = {
         "current_stock", "stock", "stock_level", "stocklevel",
         "inventory", "inventory_level", "on_hand", "onhand", "quantity_on_hand",
     ],
+    "lead_time_days": [
+    "lead_time_days", "lead_time", "leadtime", "supplier_lead_time",
+    "delivery_time", "days_to_deliver",
+],
 }
 
 
