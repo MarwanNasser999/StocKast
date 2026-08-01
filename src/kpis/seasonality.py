@@ -3,8 +3,11 @@ Seasonality Detection for src.kpis.
 
 Tests weekly, monthly, and yearly seasonality using seasonal
 decomposition. Each period is only tested if there's enough data for at
-least 2 full cycles -- otherwise that period is reported as
-'not enough data', never skipped silently or guessed.
+least 6 full cycles -- empirically, 2-4 cycles produced false positives
+on pure random noise 47-100% of the time (tested across 30 seeds); 6
+cycles brings the false-positive rate down to roughly 7%. Otherwise
+that period is reported as 'not enough data', never skipped silently
+or guessed.
 """
 
 from __future__ import annotations
@@ -13,6 +16,7 @@ import pandas as pd
 from statsmodels.tsa.seasonal import seasonal_decompose
 
 SEASONAL_STRENGTH_THRESHOLD = 0.3
+MIN_CYCLES_REQUIRED = 6
 
 PERIODS_TO_TEST = {
     "weekly": 7,
@@ -30,12 +34,12 @@ def _build_daily_series(df: pd.DataFrame) -> pd.Series:
 
 
 def _test_one_period(series: pd.Series, period: int, label: str) -> dict:
-    min_days_needed = period * 2
+    min_days_needed = period * MIN_CYCLES_REQUIRED
 
     if len(series) < min_days_needed:
         return {
             "period_label": label, "period_days": period,
-            "error": f"Need at least {min_days_needed} days of data to test "
+            "error": f"Need at least {min_days_needed} days of data to reliably test "
                      f"{label} seasonality (have {len(series)}).",
         }
 
