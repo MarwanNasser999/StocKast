@@ -30,6 +30,45 @@ LOOKAHEAD_DAYS = 14     # the actual prediction horizon: stockout within the nex
 SNAPSHOT_INTERVAL_DAYS = 7  # sample one snapshot per product per week (keeps training set manageable, reduces redundant near-identical rows)
 TEST_SIZE = 0.2
 RANDOM_STATE = 42
+RISK_HIGH_THRESHOLD = 0.66
+RISK_MEDIUM_THRESHOLD = 0.33
+
+
+def build_risk_table(model, feature_table: pd.DataFrame) -> pd.DataFrame:
+    """
+    Produces a standardized risk table: product_id, risk_label,
+    risk_score, method -- same shape rule_based_risk.py produces, so
+    consumers (recommendation_engine) never need to know this came
+    from a trained model, predict_proba, or any feature details.
+    Uses each product's MOST RECENT snapshot as its current risk.
+    """
+    feature_cols = ["days_of_inventory", "demand_volatility", "trailing_demand_slope", "trailing_total_demand"]
+
+    latest_snapshots = (
+        feature_table.sort_values("snapshot_date")
+        .groupby("product_id")
+        .tail(1)
+    )
+
+    probabilities = model.predict_proba(latest_snapshots[feature_cols])[:, 1]
+
+    rows = []
+    for (_, row), proba in zip(latest_snapshots.iterrows(), probabilities):
+        if proba >= RISK_HIGH_THRESHOLD:
+            label = "high"
+        elif proba >= RISK_MEDIUM_THRESHOLD:
+            label = "medium"
+        else:
+            label = "low"
+
+        rows.append({
+            "product_id": row["product_id"],
+            "risk_label": label,
+            "risk_score": float(proba),
+            "method": "ml_classifier",
+        })
+
+    return pd.DataFrame(rows)
 
 
 def _build_daily_demand_series(product_df: pd.DataFrame) -> pd.Series:
