@@ -29,47 +29,83 @@ def _build_daily_series(df: pd.DataFrame) -> pd.Series:
     """Build a complete, gap-filled daily demand series (missing days = 0)."""
     daily = df.groupby(df["date"].dt.date)["quantity_sold"].sum()
     daily.index = pd.to_datetime(daily.index)
-    full_range = pd.date_range(daily.index.min(), daily.index.max(), freq="D")
+
+    full_range = pd.date_range(
+        daily.index.min(),
+        daily.index.max(),
+        freq="D",
+    )
+
     return daily.reindex(full_range, fill_value=0)
 
 
 def _test_one_period(series: pd.Series, period: int, label: str) -> dict:
+    """Test a single seasonality period."""
+
     min_days_needed = period * MIN_CYCLES_REQUIRED
 
     if len(series) < min_days_needed:
         return {
-            "period_label": label, "period_days": period,
-            "error": f"Need at least {min_days_needed} days of data to reliably test "
-                     f"{label} seasonality (have {len(series)}).",
+            "period_label": label,
+            "period_days": period,
+            "error": (
+                f"Need at least {min_days_needed} days of data to reliably test "
+                f"{label} seasonality (have {len(series)})."
+            ),
         }
 
-    decomposition = seasonal_decompose(series, model="additive", period=period)
+    decomposition = seasonal_decompose(
+        series,
+        model="additive",
+        period=period,
+    )
 
     seasonal_var = decomposition.seasonal.var()
     residual_var = decomposition.resid.dropna().var()
     total_var = seasonal_var + residual_var
 
-    seasonal_strength = seasonal_var / total_var if total_var > 0 else 0.0
+    seasonal_strength = (
+        seasonal_var / total_var if total_var > 0 else 0.0
+    )
+
     is_seasonal = seasonal_strength > SEASONAL_STRENGTH_THRESHOLD
 
+    if is_seasonal:
+        interpretation = (
+            f"Your sales follow a noticeable {label} pattern — worth planning around."
+        )
+    else:
+        interpretation = (
+            f"No strong {label} pattern was found in your sales — "
+            f"demand looks fairly steady on a {label} basis."
+        )
+
     return {
-        "period_label": label, "period_days": period,
+        "period_label": label,
+        "period_days": period,
         "seasonal_strength": float(seasonal_strength),
         "is_seasonal": bool(is_seasonal),
-        "interpretation": (
-            f"Demand shows a {'clear' if is_seasonal else 'weak or no'} {label} pattern "
-            f"(strength={seasonal_strength:.2f})."
-        ),
+        "interpretation": interpretation,
     }
 
 
 def detect_seasonality(df: pd.DataFrame) -> dict[str, dict]:
     """
-    Tests weekly, monthly, and yearly seasonality. Returns
-    {period_label: result_dict} -- each result either has the full
-    strength/interpretation, or an 'error' key if there wasn't enough
-    data for that specific period.
+    Tests weekly, monthly, and yearly seasonality.
+
+    Returns:
+        {
+            period_label: result_dict
+        }
+
+    Each result either contains:
+    - seasonal_strength
+    - is_seasonal
+    - interpretation
+
+    or an "error" key if there wasn't enough data.
     """
+
     series = _build_daily_series(df)
 
     return {

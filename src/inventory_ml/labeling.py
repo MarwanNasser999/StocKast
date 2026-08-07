@@ -45,7 +45,7 @@ def detect_stockout_dates(product_df: pd.DataFrame) -> pd.DatetimeIndex:
 def count_total_stockout_events(df: pd.DataFrame) -> int:
     """Total genuine stockout events across all products -- used for the
     upfront 'is there enough data' gate, not for per-snapshot labeling."""
-    if not field_is_available(df.columns, "current_stock"):
+    if not field_is_available(df, "current_stock"):
         return 0
 
     total = 0
@@ -60,7 +60,7 @@ def can_build_ml_classifier(df: pd.DataFrame) -> tuple[bool, str]:
     or (False, reason) explaining why to fall back to a rule-based
     approach instead.
     """
-    if not field_is_available(df.columns, "current_stock"):
+    if not field_is_available(df, "current_stock"):
         return False, "current_stock is not available in this dataset."
 
     readings_per_product = df.groupby("product_id")["current_stock"].apply(

@@ -17,3 +17,5 @@ reports/*
 !reports/.gitkeep
 .DS_Store
 .env 
+storage/model_cache/
+storage/forecast_cache/

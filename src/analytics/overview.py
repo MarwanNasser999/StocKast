@@ -36,7 +36,7 @@ def run_analytics(df: pd.DataFrame) -> AnalyticsResult:
 
     # 3. hypothesis tests -- Option C: small, fixed default set, automatic
     for group_field in DEFAULT_HYPOTHESIS_GROUP_FIELDS:
-        if field_is_available(df.columns, group_field):
+        if field_is_available(df, group_field):
             test_result = compare_top_two_groups(df, "quantity_sold", group_field)
             if "error" not in test_result:
                 result.hypothesis_tests.append(test_result)
@@ -45,7 +45,7 @@ def run_analytics(df: pd.DataFrame) -> AnalyticsResult:
     result.distribution_tests = test_all_distributions(df)
 
     # 5. supporting charts
-    available_numeric = [f for f in NUMERIC_FIELDS if field_is_available(df.columns, f)]
+    available_numeric = [f for f in NUMERIC_FIELDS if field_is_available(df, f)]
     heatmap = charts.build_correlation_heatmap(df, available_numeric)
     if heatmap is not None:
         result.figures["correlation_heatmap"] = heatmap

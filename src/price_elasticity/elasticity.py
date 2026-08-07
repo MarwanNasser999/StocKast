@@ -40,7 +40,7 @@ def compute_price_elasticity(df: pd.DataFrame) -> pd.DataFrame | None:
     r_squared, p_value, classification, n_observations.
     Returns None entirely if unit_price isn't available in this dataset.
     """
-    if not field_is_available(df.columns, "unit_price"):
+    if not field_is_available(df, "unit_price"):
         return None
 
     results = []

@@ -32,7 +32,7 @@ def compute_abc_analysis(df: pd.DataFrame) -> pd.DataFrame:
     metric (revenue or quantity), its cumulative percentage of the
     total, its ABC tier, and which basis was actually used.
     """
-    use_revenue = field_is_available(df.columns, "unit_price")
+    use_revenue = field_is_available(df, "unit_price")
 
     if use_revenue:
         df = df.copy()

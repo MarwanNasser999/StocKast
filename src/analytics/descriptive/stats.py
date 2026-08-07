@@ -26,7 +26,7 @@ def compute_descriptive_stats(df: pd.DataFrame) -> dict[str, dict[str, float]]:
     results: dict[str, dict[str, float]] = {}
 
     for field in NUMERIC_FIELDS:
-        if not field_is_available(df.columns, field):
+        if not field_is_available(df, field):
             continue
 
         series = df[field].dropna()

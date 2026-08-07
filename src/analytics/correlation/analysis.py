@@ -67,7 +67,7 @@ def compute_all_correlations(df: pd.DataFrame) -> list[dict]:
     comparisons risk hypothesis testing does, since we're not testing for
     'significance' as a pass/fail claim per pair, just reporting strength.
     """
-    available = [f for f in NUMERIC_FIELDS if field_is_available(df.columns, f)]
+    available = [f for f in NUMERIC_FIELDS if field_is_available(df, f)]
     results = []
 
     for i in range(len(available)):

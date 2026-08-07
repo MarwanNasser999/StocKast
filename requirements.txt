@@ -10,3 +10,4 @@ scipy
 scikit-learn
 shap
 google-generativeai
+streamlit

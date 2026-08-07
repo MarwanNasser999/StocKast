@@ -20,7 +20,7 @@ def compute_days_of_inventory(df: pd.DataFrame) -> pd.DataFrame | None:
     avg_daily_demand, days_of_inventory. Returns None if current_stock
     isn't available in this dataset.
     """
-    if not field_is_available(df.columns, "current_stock"):
+    if not field_is_available(df, "current_stock"):
         return None
 
     df = df.sort_values("date")

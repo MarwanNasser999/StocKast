@@ -83,7 +83,7 @@ def recommend_discount(dead_stock_row: pd.Series, display_name: str) -> dict | N
         reasoning=f"Flagged as {'dead stock' if dead_stock_row['is_dead_stock'] else 'a slow mover'} ({reason}).",
         priority="low",
         source_signals={"days_since_last_sale": dead_stock_row["days_since_last_sale"],
-                         "total_quantity_sold": dead_stock_row["total_quantity_sold"]},
+                         "gross_quantity_sold": dead_stock_row["gross_quantity_sold"]},
     )
 
 

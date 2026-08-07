@@ -31,7 +31,7 @@ def compute_safety_stock(df: pd.DataFrame, service_level_z: float = 1.65,
     std_demand.columns = ["product_id", "std_daily_demand"]
     std_demand["std_daily_demand"] = std_demand["std_daily_demand"].fillna(0)
 
-    has_lead_time_field = field_is_available(df.columns, "lead_time_days")
+    has_lead_time_field = field_is_available(df, "lead_time_days")
 
     if has_lead_time_field:
         lead_times = df.groupby("product_id")["lead_time_days"].mean().reset_index()

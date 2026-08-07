@@ -19,16 +19,25 @@ from src.kpis.overview import run_kpis
 from src.price_elasticity.overview import run_price_elasticity
 from src.recommendation_engine.rule_based_risk import compute_rule_based_risk
 from src.recommendation_engine.rules import (
-    recommend_reorder, recommend_reduce_inventory, recommend_discount,
-    recommend_increase_safety_stock, recommend_price_change,
+    recommend_reorder,
+    recommend_reduce_inventory,
+    recommend_discount,
+    recommend_increase_safety_stock,
+    recommend_price_change,
 )
 
 PRIORITY_ORDER = {"high": 0, "medium": 1, "low": 2}
 
 
-def get_risk_assessment(df: pd.DataFrame, kpi_result, forecast_results: dict) -> pd.DataFrame:
-    """Real ML risk table if available, otherwise the rule-based
-    fallback table -- same shape either way, caller never needs to know which."""
+def get_risk_assessment(
+    df: pd.DataFrame,
+    kpi_result,
+    forecast_results: dict,
+) -> pd.DataFrame:
+    """
+    Real ML risk table if available, otherwise the rule-based
+    fallback table -- same shape either way.
+    """
     ml_result = run_inventory_ml(df)
 
     if ml_result["path"] == "ml_classifier":
@@ -42,26 +51,67 @@ def get_risk_assessment(df: pd.DataFrame, kpi_result, forecast_results: dict) ->
 
 
 def _get_display_name(df: pd.DataFrame, product_id: str) -> str:
-    if not field_is_available(df.columns, "product_name"):
+    """
+    Returns a friendly display name for a product.
+
+    If multiple product_ids share the same product_name,
+    append the product_id to disambiguate them.
+    """
+
+    if not field_is_available(df, "product_name"):
         return product_id
-    names = df.loc[df["product_id"] == product_id, "product_name"].dropna()
-    return names.iloc[0] if not names.empty else product_id
+
+    pairs = (
+        df[["product_id", "product_name"]]
+        .drop_duplicates(subset="product_id")
+        .copy()
+    )
+
+    pairs["product_name"] = pairs["product_name"].fillna(
+        pairs["product_id"]
+    )
+
+    counts = pairs["product_name"].value_counts()
+
+    row = pairs[pairs["product_id"] == product_id]
+
+    if row.empty:
+        return product_id
+
+    name = row.iloc[0]["product_name"]
+
+    if counts[name] > 1:
+        return f"{name} ({product_id})"
+
+    return name
 
 
-def _extract_risk_row(risk_table: pd.DataFrame, product_id: str) -> dict | None:
+def _extract_risk_row(
+    risk_table: pd.DataFrame,
+    product_id: str,
+) -> dict | None:
     if risk_table is None or risk_table.empty:
         return None
+
     rows = risk_table[risk_table["product_id"] == product_id]
+
     return rows.iloc[0].to_dict() if not rows.empty else None
 
 
 def run_recommendations(df: pd.DataFrame) -> list[dict]:
-    """Runs the full pipeline and returns a priority-sorted list of
-    concrete recommendations across all products."""
+    """
+    Runs the full pipeline and returns a priority-sorted list
+    of recommendations.
+    """
+
     kpi_result = run_kpis(df)
     forecast_results = run_forecasting(df)
     elasticity_result = run_price_elasticity(df)
-    risk_table = get_risk_assessment(df, kpi_result, forecast_results)
+    risk_table = get_risk_assessment(
+        df,
+        kpi_result,
+        forecast_results,
+    )
 
     recommendations = []
 
@@ -72,48 +122,98 @@ def run_recommendations(df: pd.DataFrame) -> list[dict]:
     elasticity_table = elasticity_result.elasticity_table
 
     for product_id in df["product_id"].unique():
+
         display_name = _get_display_name(df, product_id)
 
         risk_row = _extract_risk_row(risk_table, product_id)
-        xyz_row = xyz_table[xyz_table["product_id"] == product_id] if xyz_table is not None else pd.DataFrame()
-        xyz_tier = xyz_row.iloc[0]["xyz_tier"] if not xyz_row.empty else "Y"
+
+        xyz_row = (
+            xyz_table[xyz_table["product_id"] == product_id]
+            if xyz_table is not None
+            else pd.DataFrame()
+        )
+
+        xyz_tier = (
+            xyz_row.iloc[0]["xyz_tier"]
+            if not xyz_row.empty
+            else "Y"
+        )
 
         if risk_row is not None and doi_table is not None:
-            doi_row_df = doi_table[doi_table["product_id"] == product_id]
+
+            doi_row_df = doi_table[
+                doi_table["product_id"] == product_id
+            ]
+
             if not doi_row_df.empty:
+
                 doi_row = doi_row_df.iloc[0]
 
                 reorder_row = None
+
                 if reorder_table is not None:
-                    reorder_row_df = reorder_table[reorder_table["product_id"] == product_id]
+                    reorder_row_df = reorder_table[
+                        reorder_table["product_id"] == product_id
+                    ]
+
                     if not reorder_row_df.empty:
                         reorder_row = reorder_row_df.iloc[0]
 
-                rec = recommend_reorder(risk_row, doi_row, reorder_row, display_name)
+                rec = recommend_reorder(
+                    risk_row,
+                    doi_row,
+                    reorder_row,
+                    display_name,
+                )
                 if rec:
                     recommendations.append(rec)
 
-                rec = recommend_reduce_inventory(doi_row, xyz_tier, display_name)
+                rec = recommend_reduce_inventory(
+                    doi_row,
+                    xyz_tier,
+                    display_name,
+                )
                 if rec:
                     recommendations.append(rec)
 
-            rec = recommend_increase_safety_stock(risk_row, xyz_tier, display_name)
+            rec = recommend_increase_safety_stock(
+                risk_row,
+                xyz_tier,
+                display_name,
+            )
             if rec:
                 recommendations.append(rec)
 
         if dead_stock_table is not None:
-            dead_row_df = dead_stock_table[dead_stock_table["product_id"] == product_id]
+
+            dead_row_df = dead_stock_table[
+                dead_stock_table["product_id"] == product_id
+            ]
+
             if not dead_row_df.empty:
-                rec = recommend_discount(dead_row_df.iloc[0], display_name)
+                rec = recommend_discount(
+                    dead_row_df.iloc[0],
+                    display_name,
+                )
                 if rec:
                     recommendations.append(rec)
 
         if elasticity_table is not None:
-            elasticity_row_df = elasticity_table[elasticity_table["product_id"] == product_id]
+
+            elasticity_row_df = elasticity_table[
+                elasticity_table["product_id"] == product_id
+            ]
+
             if not elasticity_row_df.empty:
-                rec = recommend_price_change(elasticity_row_df.iloc[0], display_name)
+                rec = recommend_price_change(
+                    elasticity_row_df.iloc[0],
+                    display_name,
+                )
                 if rec:
                     recommendations.append(rec)
 
-    recommendations.sort(key=lambda r: PRIORITY_ORDER.get(r["priority"], 3))
+    recommendations.sort(
+        key=lambda r: PRIORITY_ORDER.get(r["priority"], 3)
+    )
+
     return recommendations

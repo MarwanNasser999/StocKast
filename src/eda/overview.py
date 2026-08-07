@@ -23,26 +23,26 @@ def run_eda(df: pd.DataFrame) -> EDAResult:
     result = EDAResult()
 
     # 1. which optional fields exist in this dataset
-    present = [f for f in OPTIONAL_FIELDS if field_is_available(df.columns, f)]
-    absent = [f for f in OPTIONAL_FIELDS if not field_is_available(df.columns, f)]
+    present = [f for f in OPTIONAL_FIELDS if field_is_available(df, f)]
+    absent = [f for f in OPTIONAL_FIELDS if not field_is_available(df, f)]
     result.available_fields = present
     result.unavailable_fields = absent
 
-    label_col = "product_name" if field_is_available(df.columns, "product_name") else "product_id"
+    label_col = "product_name" if field_is_available(df, "product_name") else "product_id"
 
     # 2. basic stats -- always computable, since date/product_id/quantity_sold are required
     result.stats["total_units_sold"] = float(df["quantity_sold"].sum())
     result.stats["distinct_products"] = int(df["product_id"].nunique())
     result.stats["date_range_days"] = int((df["date"].max() - df["date"].min()).days)
 
-    if field_is_available(df.columns, "unit_price"):
+    if field_is_available(df, "unit_price"):
         result.stats["total_revenue"] = float((df["quantity_sold"] * df["unit_price"]).sum())
 
     # 3. demand over time -- always possible (date + quantity_sold are required)
     result.figures["demand_over_time"] = charts.build_demand_over_time_chart(df)
 
     # 4. revenue by category -- needs category AND unit_price
-    if field_is_available(df.columns, "category") and field_is_available(df.columns, "unit_price"):
+    if field_is_available(df, "category") and field_is_available(df, "unit_price"):
         result.figures["revenue_by_category"] = charts.build_revenue_by_category_chart(df)
 
     # 5. top products by volume -- always possible
@@ -55,7 +55,7 @@ def run_eda(df: pd.DataFrame) -> EDAResult:
 
     # 7. distribution/outliers -- for every numeric field actually present
     for field in NUMERIC_FIELDS_FOR_DISTRIBUTION:
-        if field_is_available(df.columns, field):
+        if field_is_available(df, field):
             result.figures[f"distribution_{field}"] = charts.build_distribution_chart(df, field)
 
     return result

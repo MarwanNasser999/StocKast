@@ -54,7 +54,7 @@ def test_normality(df: pd.DataFrame, field: str) -> dict:
 
 def test_all_distributions(df: pd.DataFrame) -> list[dict]:
     """Run the normality test for every numeric field actually present."""
-    available = [f for f in NUMERIC_FIELDS if field_is_available(df.columns, f)]
+    available = [f for f in NUMERIC_FIELDS if field_is_available(df, f)]
     results = []
 
     for field in available:

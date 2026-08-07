@@ -46,13 +46,15 @@ def apply_mapping(raw_df: pd.DataFrame, mapping_result: MappingResult) -> pd.Dat
 
         if canonical_field in mapping_result.mapping:
             raw_column = mapping_result.mapping[canonical_field]
-            canonical_df[canonical_field] = raw_df[raw_column]
+            if field_spec.dtype == "string":
+                canonical_df[canonical_field] = raw_df[raw_column].apply(
+                    lambda x: str(x) if pd.notna(x) else None
+                )
+            else:
+                canonical_df[canonical_field] = raw_df[raw_column]
         elif field_spec.default_if_missing is not None:
-            # e.g. warehouse_id -> "main" for every row
             canonical_df[canonical_field] = field_spec.default_if_missing
         else:
-            # optional field with no mapping and no safe default (e.g. unit_cost)
-            # -- left as missing, never fabricated
             canonical_df[canonical_field] = None
 
     return canonical_df

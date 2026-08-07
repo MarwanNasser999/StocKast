@@ -27,7 +27,7 @@ def compute_turnover(df: pd.DataFrame) -> pd.DataFrame | None:
     ("historical_average" or "single_snapshot_approximation").
     Returns None if current_stock isn't available in this dataset.
     """
-    if not field_is_available(df.columns, "current_stock"):
+    if not field_is_available(df, "current_stock"):
         return None
 
     grouped = df.groupby("product_id").agg(
@@ -44,4 +44,9 @@ def compute_turnover(df: pd.DataFrame) -> pd.DataFrame | None:
     grouped = grouped[grouped["avg_inventory"] > 0].copy()
     grouped["turnover_ratio"] = grouped["total_quantity_sold"] / grouped["avg_inventory"]
 
+    
+    if grouped.empty:
+        return None
+    
     return grouped.drop(columns=["stock_variation"])
+    
