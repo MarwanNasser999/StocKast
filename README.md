@@ -1,4 +1,4 @@
-# 📦 StocKast — AI-Powered Inventory Intelligence Platform
+# StocKast — AI-Powered Inventory Intelligence Platform
 
 <p align="center">
   <img src="docs/screenshots/01_project_banner.png"
@@ -19,13 +19,23 @@
 <p align="center">
   <a href="https://stockast-inventory.streamlit.app/">
     <img src="https://static.streamlit.io/badges/streamlit_badge_black_white.svg"
-         alt="Open in Streamlit">
+         alt="Open StocKast in Streamlit">
   </a>
 </p>
 
 ---
 
-## 📊 Dashboard
+## Live Demo
+
+You can try StocKast directly in your browser without installing anything locally.
+
+**Live App:** https://stockast-inventory.streamlit.app/
+
+> The live demo runs on Streamlit Community Cloud. Some computationally intensive operations may take longer depending on the uploaded dataset and available resources.
+
+---
+
+## Dashboard
 
 <p align="center">
   <img src="docs/screenshots/02_dashboard.png"
@@ -43,7 +53,7 @@ StocKast is deliberately different: it is a **generic inventory intelligence pla
 
 The same code that works on a small boutique retailer's spreadsheet can also work on a large wholesale dataset with tens of thousands of rows and hundreds of products — without hardcoding a single column name or business-specific assumption.
 
-That constraint shaped almost every architectural decision in the project and is the central idea behind the design documented in [`docs/`](docs/).
+That constraint shaped almost every architectural decision in the project and is the central idea behind the design documented in `docs/`.
 
 ---
 
@@ -109,7 +119,7 @@ The entire `app/` layer could therefore be replaced with a different frontend �
 
 Several architectural decisions were made intentionally to keep StocKast reliable across different datasets.
 
-More details are available in [`docs/design_decisions.md`](docs/design_decisions.md).
+More details are available in `docs/design_decisions.md`.
 
 ### Optional Fields Are Never Fabricated
 
@@ -176,11 +186,13 @@ Sparse or incomplete datasets do not cause the application to crash. Instead, in
 
 ## Running It Locally
 
+If you prefer to run StocKast locally and have full control over the environment, follow the steps below.
+
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/<your-username>/StocKast.git
-cd StocKast
+git clone https://github.com/MarwanNasser999/StockSense.git
+cd StockSense
 ```
 
 ### 2. Install Dependencies
@@ -191,7 +203,9 @@ pip install -r requirements.txt
 
 ### 3. Configure the Gemini API Key
 
-Get a Gemini API key from Google AI Studio.
+StocKast uses the Google Gemini API for its AI Assistant.
+
+Set your API key as an environment variable.
 
 #### Windows CMD
 
@@ -204,6 +218,8 @@ set GEMINI_API_KEY=your_key_here
 ```powershell
 $env:GEMINI_API_KEY="your_key_here"
 ```
+
+> Never commit your API key to GitHub or include it directly in the source code.
 
 ### 4. Run the Application
 
@@ -235,7 +251,7 @@ The project currently contains **132 tests** covering the modules in `src/`, inc
 * Data validation and cleaning
 * Bugs discovered and fixed during development
 
-Additional implementation and design notes are available in [`docs/`](docs/).
+Additional implementation and design notes are available in `docs/`.
 
 ---
 
@@ -302,4 +318,16 @@ StocKast/
 
 ## License
 
-This project is licensed under the **MIT License**. See the [`LICENSE`](LICENSE) file for details.
+This project is licensed under the **MIT License**. See the `LICENSE` file for details.
+
+---
+
+## Author
+
+**Marwan Nasser**
+
+Data Scientist & AI Engineer
+
+Focused on Data Science, Artificial Intelligence, and building intelligent data-driven applications.
+
+<p align="center">   <a href="https://stockast-inventory.streamlit.app/">     <strong>Try StocKast Live</strong>   </a> </p>
