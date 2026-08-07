@@ -1,27 +1,12 @@
-# StocKast — AI-Powered Inventory Intelligence Platform
+# 📦 StocKast — AI-Powered Inventory Intelligence Platform
 
-<p align="center">
-  <img src="docs/screenshots/01_project_banner.png"
-       alt="StocKast - AI-Powered Inventory Intelligence Platform"
-       width="100%">
-</p>
+<p align="center">   <img src="docs/screenshots/01_project_banner.png"        alt="StocKast - AI-Powered Inventory Intelligence Platform"        width="100%"> </p>
 
-<p align="center">
-  <strong>Smarter Inventory. Better Decisions. Stronger Business.</strong>
-</p>
+<p align="center">   <strong>Smarter Inventory. Better Decisions. Stronger Business.</strong> </p>
 
-<p align="center">
-  StocKast turns raw inventory and sales data into a complete operational picture —
-  what's happening, what's likely to happen next, what's at risk,
-  and what to actually do about it.
-</p>
+<p align="center">   StocKast turns raw inventory and sales data into a complete operational picture —   what's happening, what's likely to happen next, what's at risk,   and what to actually do about it. </p>
 
-<p align="center">
-  <a href="https://stockast-inventory.streamlit.app/">
-    <img src="https://static.streamlit.io/badges/streamlit_badge_black_white.svg"
-         alt="Open StocKast in Streamlit">
-  </a>
-</p>
+<p align="center">   <a href="https://stockast-inventory.streamlit.app/">     <img src="https://static.streamlit.io/badges/streamlit_badge_black_white.svg"          alt="Open StocKast in Streamlit">   </a> </p>
 
 ---
 
@@ -35,13 +20,9 @@ You can try StocKast directly in your browser without installing anything locall
 
 ---
 
-## Dashboard
+## 📊 Dashboard
 
-<p align="center">
-  <img src="docs/screenshots/02_dashboard.png"
-       alt="StocKast Dashboard"
-       width="95%">
-</p>
+<p align="center">   <img src="docs/screenshots/02_dashboard.png"        alt="StocKast Dashboard"        width="95%"> </p>
 
 ---
 
@@ -277,7 +258,7 @@ The goal would not be to rewrite the core intelligence layer. Instead, V2 would 
 
 ---
 
-## Project Structure
+## 📁 Project Structure
 
 ```text
 StocKast/
