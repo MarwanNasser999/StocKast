@@ -3,6 +3,7 @@ numpy
 pydantic>=2
 pytest
 plotly
+rapidfuzz
 charset-normalizer
 openpyxl
 pmdarima
