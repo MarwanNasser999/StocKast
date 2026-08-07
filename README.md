@@ -1,20 +1,37 @@
 # 📦 StocKast — AI-Powered Inventory Intelligence Platform
 
-<p align="center">   <img src="docs/screenshots/01_project_banner.png"        alt="StocKast - AI-Powered Inventory Intelligence Platform"        width="100%"> </p>
+<p align="center">
+  <img src="docs/screenshots/01_project_banner.png"
+       alt="StocKast - AI-Powered Inventory Intelligence Platform"
+       width="100%">
+</p>
 
-<p align="center">   <strong>Smarter Inventory. Better Decisions. Stronger Business.</strong> </p>
+<p align="center">
+  <strong>Smarter Inventory. Better Decisions. Stronger Business.</strong>
+</p>
 
-<p align="center">   StocKast turns raw inventory and sales data into a complete operational picture —   what's happening, what's likely to happen next, what's at risk,   and what to actually do about it. </p>
+<p align="center">
+  StocKast turns raw inventory and sales data into a complete operational picture —
+  what's happening, what's likely to happen next, what's at risk,
+  and what to actually do about it.
+</p>
 
----
-
-🔗 **Live demo:** *[Add your Streamlit Community Cloud URL here once deployed]*
+<p align="center">
+  <a href="https://stockast-inventory.streamlit.app/">
+    <img src="https://static.streamlit.io/badges/streamlit_badge_black_white.svg"
+         alt="Open in Streamlit">
+  </a>
+</p>
 
 ---
 
 ## 📊 Dashboard
 
-<p align="center">   <img src="docs/screenshots/02_dashboard.png"        alt="StocKast Dashboard"        width="95%"> </p>
+<p align="center">
+  <img src="docs/screenshots/02_dashboard.png"
+       alt="StocKast Dashboard"
+       width="95%">
+</p>
 
 ---
 
@@ -26,7 +43,7 @@ StocKast is deliberately different: it is a **generic inventory intelligence pla
 
 The same code that works on a small boutique retailer's spreadsheet can also work on a large wholesale dataset with tens of thousands of rows and hundreds of products — without hardcoding a single column name or business-specific assumption.
 
-That constraint shaped almost every architectural decision in the project and is the central idea behind the design documented in `docs/`.
+That constraint shaped almost every architectural decision in the project and is the central idea behind the design documented in [`docs/`](docs/).
 
 ---
 
@@ -92,7 +109,7 @@ The entire `app/` layer could therefore be replaced with a different frontend �
 
 Several architectural decisions were made intentionally to keep StocKast reliable across different datasets.
 
-More details are available in `docs/design_decisions.md`.
+More details are available in [`docs/design_decisions.md`](docs/design_decisions.md).
 
 ### Optional Fields Are Never Fabricated
 
@@ -218,7 +235,7 @@ The project currently contains **132 tests** covering the modules in `src/`, inc
 * Data validation and cleaning
 * Bugs discovered and fixed during development
 
-Additional implementation and design notes are available in `docs/`.
+Additional implementation and design notes are available in [`docs/`](docs/).
 
 ---
 
@@ -277,6 +294,7 @@ StocKast/
 │   └── design_decisions.md
 │
 ├── requirements.txt
+├── LICENSE
 └── README.md
 ```
 
@@ -284,4 +302,4 @@ StocKast/
 
 ## License
 
-*Add your chosen license here, such as MIT.*
+This project is licensed under the **MIT License**. See the [`LICENSE`](LICENSE) file for details.
